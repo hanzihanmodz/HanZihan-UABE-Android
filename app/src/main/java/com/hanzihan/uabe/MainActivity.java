@@ -67,13 +67,130 @@ public class MainActivity extends Activity {
     }
 
     private void buildUi() {
+        // DESKTOP WORKSPACE SHELL
+        LinearLayout shell = new LinearLayout(this);
+        shell.setOrientation(LinearLayout.HORIZONTAL);
+        shell.setBackgroundColor(bg);
+
+        int widthDp = (int) (getResources().getDisplayMetrics().widthPixels /
+                getResources().getDisplayMetrics().density);
+        int sidebarWidth = widthDp >= 700 ? 190 : 112;
+
+        // LEFT SIDEBAR
+        LinearLayout sidebar = new LinearLayout(this);
+        sidebar.setOrientation(LinearLayout.VERTICAL);
+        sidebar.setPadding(dp(10), dp(18), dp(10), dp(14));
+        sidebar.setBackgroundColor(Color.rgb(13, 15, 21));
+
+        TextView sideBrand = text("HZ / UABE", 17, white, true);
+        sidebar.addView(sideBrand);
+
+        TextView sideSubtitle = text("ASSET WORKSPACE", 8, muted, true);
+        LinearLayout.LayoutParams sideSubLp = params(-1, -2);
+        sideSubLp.topMargin = dp(5);
+        sidebar.addView(sideSubtitle, sideSubLp);
+
+        View accent = new View(this);
+        accent.setBackgroundColor(red);
+        LinearLayout.LayoutParams accentLp = params(dp(38), dp(3));
+        accentLp.topMargin = dp(15);
+        accentLp.bottomMargin = dp(18);
+        sidebar.addView(accent, accentLp);
+
+        sidebar.addView(text("WORKSPACES", 9, muted, true));
+
+        Button freeFireNav = button("FREE FIRE", false);
+        Button mlbbNav = button("MLBB", false);
+        Button aovNav = button("AOV BYTES", true);
+
+        LinearLayout.LayoutParams navLp = params(-1, dp(42));
+        navLp.topMargin = dp(9);
+        sidebar.addView(freeFireNav, navLp);
+
+        LinearLayout.LayoutParams mlbbLp = params(-1, dp(42));
+        mlbbLp.topMargin = dp(6);
+        sidebar.addView(mlbbNav, mlbbLp);
+
+        LinearLayout.LayoutParams aovLp = params(-1, dp(42));
+        aovLp.topMargin = dp(6);
+        sidebar.addView(aovNav, aovLp);
+
+        View separator = new View(this);
+        separator.setBackgroundColor(Color.rgb(48, 51, 61));
+        LinearLayout.LayoutParams separatorLp = params(-1, dp(1));
+        separatorLp.topMargin = dp(17);
+        separatorLp.bottomMargin = dp(14);
+        sidebar.addView(separator, separatorLp);
+
+        sidebar.addView(text("TOOLS", 9, muted, true));
+
+        TextView toolList = text(
+                "Asset Explorer\nMesh Manager\nTexture2D\nAnimationClip\nJSON Editor",
+                10, white, false);
+        toolList.setLineSpacing(dp(7), 1.0f);
+        LinearLayout.LayoutParams toolListLp = params(-1, -2);
+        toolListLp.topMargin = dp(12);
+        sidebar.addView(toolList, toolListLp);
+
+        TextView sideFooter = text("JAPANESE\nPROJECT", 8, muted, true);
+        LinearLayout.LayoutParams footerLp = params(-1, -2);
+        footerLp.topMargin = dp(24);
+        sidebar.addView(sideFooter, footerLp);
+
+        // MAIN WORKSPACE
+        LinearLayout workspace = new LinearLayout(this);
+        workspace.setOrientation(LinearLayout.VERTICAL);
+        workspace.setBackgroundColor(bg);
+
+        LinearLayout topbar = new LinearLayout(this);
+        topbar.setOrientation(LinearLayout.HORIZONTAL);
+        topbar.setGravity(Gravity.CENTER_VERTICAL);
+        topbar.setPadding(dp(14), dp(8), dp(14), dp(8));
+        topbar.setBackgroundColor(panel);
+
+        TextView topTitle = text("HANZIHAN UABE", 14, white, true);
+        topbar.addView(topTitle, new LinearLayout.LayoutParams(0, -2, 1f));
+
+        TextView topStatus = text("DESKTOP MODE", 9, muted, true);
+        topbar.addView(topStatus);
+
+        workspace.addView(topbar, params(-1, dp(52)));
+
         ScrollView scroll = new ScrollView(this);
         scroll.setFillViewport(true);
         scroll.setBackgroundColor(bg);
+
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(18), dp(24), dp(18), dp(32));
+        root.setPadding(dp(18), dp(20), dp(18), dp(32));
         scroll.addView(root);
+
+        LinearLayout.LayoutParams scrollLp = params(-1, 0);
+        scrollLp.weight = 1f;
+        workspace.addView(scroll, scrollLp);
+
+        shell.addView(sidebar, params(dp(sidebarWidth), -1));
+
+        LinearLayout.LayoutParams workspaceLp = params(0, -1);
+        workspaceLp.weight = 1f;
+        shell.addView(workspace, workspaceLp);
+
+        freeFireNav.setOnClickListener(v -> {
+            if (status != null) {
+                status.setText("FREE FIRE AssetBundle workspace — integrasi UnityPy sedang dikerjakan.");
+            }
+        });
+
+        mlbbNav.setOnClickListener(v -> {
+            if (status != null) {
+                status.setText("MLBB AssetBundle workspace — integrasi UnityPy sedang dikerjakan.");
+            }
+        });
+
+        aovNav.setOnClickListener(v -> {
+            scroll.smoothScrollTo(0, 0);
+            if (status != null) status.setText("AOV Bytes Workspace");
+        });
 
         TextView brand = text("HANZIHAN UABE", 23, white, true);
         brand.setLetterSpacing(0.08f);
@@ -328,7 +445,7 @@ public class MainActivity extends Activity {
         LinearLayout.LayoutParams probeTextLp = params(-1, -2); probeTextLp.topMargin = dp(12);
         future.addView(unityProbeView, probeTextLp);
 
-        setContentView(scroll);
+        setContentView(shell);
     }
 
     private void runAnalysis() {
