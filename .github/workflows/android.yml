@@ -3,7 +3,7 @@ name: Build HanZihan UABE APK (32-bit ARM)
 on:
   workflow_dispatch:
   push:
-    branches: [ main, master ]
+    branches: [ '**' ]
 
 permissions:
   contents: read
